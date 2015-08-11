@@ -12,7 +12,11 @@ struct PhotoFilterConsts {
   static let ImportPhotoFrom = "Import a Photo"
   static let PickOne = "pick one"
   static let CameraAction = "Camera"
-  static let SavedPhotosAlbum = "Saved Photos Album"
+  static let SavedPhotosAlbumAction = "Saved Photos Album"
   static let PhotoLibraryAction = "Photo Library"
   static let CancelAction = "Cancel"
+  static let ChooseFilter = "Choose a Filter"
+  static let ColorMonochromeAction = "Color Monochrome"
+  static let ColorCrossPolynomialAction = "Color Cross Polynomial"
+  static let TriangleKaleidoscopeAction = "Triangle Kaleidoscope"
 }
