@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>3AFA3083-B8E1-4B0C-BDC5-0B6ADA9E6B11</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ParseStarterProject</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>AE4CE44CC8DEF215ABC1D2C35147D403A3CD4142</key>
+		<string>https://github.com/mdaviscph/CodeFellowsD40w2.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PhotoFilterApp/ParseStarterProject.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>AE4CE44CC8DEF215ABC1D2C35147D403A3CD4142</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/mdaviscph/CodeFellowsD40w2.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>AE4CE44CC8DEF215ABC1D2C35147D403A3CD4142</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>AE4CE44CC8DEF215ABC1D2C35147D403A3CD4142</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PhotoFilterApp</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -26,10 +26,12 @@ class ViewController: UIViewController {
   func actionSheetForImagePicker() {
     let alert = UIAlertController(title: PhotoFilterConsts.ImportPhotoFrom, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
     for sourceType in UIImagePickerControllerSourceType.allCases {
-      let sourceAction = UIAlertAction(title: sourceType.actionTitle, style: UIAlertActionStyle.Destructive) { (action) -> Void in
-        self.startImagePicker(sourceType)
+      if UIImagePickerController.isSourceTypeAvailable(sourceType) {
+        let sourceAction = UIAlertAction(title: sourceType.actionTitle, style: UIAlertActionStyle.Destructive) { (action) -> Void in
+          self.startImagePicker(sourceType)
+        }
+        alert.addAction(sourceAction)
       }
-      alert.addAction(sourceAction)
     }
     let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel, handler: nil)
     alert.addAction(cancelAction)
@@ -50,7 +52,7 @@ class ViewController: UIViewController {
   
   func actionSheetForFilter() {
     let alert = UIAlertController(title: PhotoFilterConsts.ChooseFilter, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
-    for filterType in FilterType.allCases {
+    for filterType in FilterType.possibleFilters {
       let filterAction = UIAlertAction(title: filterType.actionTitle, style: UIAlertActionStyle.Default) { (action) -> Void in
         self.applyFilter(filterType)
       }
@@ -64,12 +66,30 @@ class ViewController: UIViewController {
   func applyFilter(filterType: FilterType) {
     println("applying filter: \(filterType)")
     let ciImage = CIImage(image: imageView.image)
-    let filter = CIFilter(name: filterType.name)
-    filter.setValue(ciImage, forKey: kCIInputImageKey)
-    let ciImageWithFilter = filter.outputImage
-    let context = CIContext()
-    let cgImage = context.createCGImage(ciImageWithFilter, fromRect: ciImageWithFilter.extent())
-    let uiImage = UIImage(CGImage: cgImage)
+    var filter: CIFilter? = nil
+    switch filterType {
+    // for now define parameters here until I can figure out a better way/place
+    case .CIColorCrossPolynomial (let paramaters):
+      filter = CIFilter(name: filterType.name, withInputParameters: paramaters)
+    case .CIColorMonochrome (let ciColorParameter, let nsNumberParameter):
+      var parameters = [String:AnyObject]()
+      for (key, value) in ciColorParameter {
+        parameters[key] = value
+      }
+      for (key, value) in nsNumberParameter {
+        parameters[key] = value
+      }
+      filter = CIFilter(name: filterType.name, withInputParameters: parameters)
+    default:
+      break
+    }
+    if let filter = filter {
+      filter.setValue(ciImage, forKey: kCIInputImageKey)
+      let ciImageWithFilter = filter.outputImage
+      let context = CIContext(options: nil)
+      let cgImage = context.createCGImage(ciImageWithFilter, fromRect: ciImageWithFilter.extent())
+      imageView.image = UIImage(CGImage: cgImage)
+    }
   }
 }
 
