@@ -27,7 +27,6 @@ xcuserdata
 *.hmap
 *.ipa
 
-.DS_Store
 Keys.swift
 
 # CocoaPods
