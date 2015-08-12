@@ -100,7 +100,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     picker.dismissViewControllerAnimated(true, completion: nil)
   }
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-    imageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage ?? nil
+    imageView.image = info[UIImagePickerControllerEditedImage] as? UIImage ?? nil
     picker.dismissViewControllerAnimated(true, completion: nil)
   }
 }
