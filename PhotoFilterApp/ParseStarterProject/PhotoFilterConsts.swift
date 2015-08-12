@@ -18,5 +18,5 @@ struct PhotoFilterConsts {
   static let ChooseFilter = "Choose a Filter"
   static let ColorMonochromeAction = "Color Monochrome"
   static let ColorCrossPolynomialAction = "Color Cross Polynomial"
-  static let TriangleKaleidoscopeAction = "Triangle Kaleidoscope"
+  static let HighlightShadowAdjustAction = "Highlight Shadow Adjust"
 }

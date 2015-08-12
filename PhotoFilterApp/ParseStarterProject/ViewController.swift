@@ -71,14 +71,16 @@ class ViewController: UIViewController {
     // for now define parameters here until I can figure out a better way/place
     case .CIColorCrossPolynomial (let paramaters):
       filter = CIFilter(name: filterType.name, withInputParameters: paramaters)
-    case .CIColorMonochrome (let ciColorParameter, let nsNumberParameter):
+    case .CIColorMonochrome (let ciColorParameter, let numberParameter):
       var parameters = [String:AnyObject]()
       for (key, value) in ciColorParameter {
         parameters[key] = value
       }
-      for (key, value) in nsNumberParameter {
+      for (key, value) in numberParameter {
         parameters[key] = value
       }
+      filter = CIFilter(name: filterType.name, withInputParameters: parameters)
+    case .CIHighlightShadowAdjust (let parameters):
       filter = CIFilter(name: filterType.name, withInputParameters: parameters)
     default:
       break
