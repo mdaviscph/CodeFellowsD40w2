@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="W55-s7-2l9">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="OGG-aV-sZ2">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
@@ -96,21 +96,31 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" id="3yy-Us-iIo">
-                        <barButtonItem key="leftBarButtonItem" systemItem="undo" id="Oc0-Zf-hXD"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="3ba-bk-Slo"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="undo" id="Oc0-Zf-hXD">
+                            <connections>
+                                <action selector="undoTapped:" destination="BYZ-38-t0r" id="H1N-Lf-D3D"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="3ba-bk-Slo">
+                            <connections>
+                                <action selector="doneTapped:" destination="BYZ-38-t0r" id="ZAw-7T-oCw"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="collectionView" destination="rDk-ZB-Kir" id="S4D-Nj-jXA"/>
                         <outlet property="imageView" destination="Nld-gk-vz9" id="ngU-E2-aos"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1288" y="167"/>
+            <point key="canvasLocation" x="2100" y="167"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Item-->
         <scene sceneID="pNQ-Gm-enf">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="W55-s7-2l9" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="6Eb-5C-dNh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="i4k-HY-IEr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -122,6 +132,24 @@
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hlF-cE-Od6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1367" y="167"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="WGZ-5x-AJX">
+            <objects>
+                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="OGG-aV-sZ2" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="Bvc-C8-uOb">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="W55-s7-2l9" kind="relationship" relationship="viewControllers" id="2We-z9-mi9"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xXn-wg-ORm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="555" y="167"/>
         </scene>

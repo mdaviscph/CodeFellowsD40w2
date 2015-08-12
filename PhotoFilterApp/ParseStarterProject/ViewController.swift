@@ -9,7 +9,15 @@ import Parse
 
 class ViewController: UIViewController {
 
+  var previousImage: UIImage?
+  
   @IBOutlet weak var imageView: UIImageView!
+  @IBOutlet weak var collectionView: UICollectionView!
+  @IBAction func undoTapped(sender: AnyObject) {
+    imageView.image = previousImage
+  }
+  @IBAction func doneTapped(sender: AnyObject) {
+  }
   @IBAction func optionsTapped(sender: AnyObject) {
     if let image = imageView.image {
       actionSheetForFilter()
@@ -66,7 +74,7 @@ class ViewController: UIViewController {
   func applyFilter(filterType: FilterType) {
     println("applying filter: \(filterType)")
     let ciImage = CIImage(image: imageView.image)
-    var filter: CIFilter? = nil
+    var filter: CIFilter?
     switch filterType {
     // for now define parameters here until I can figure out a better way/place
     case .CIColorCrossPolynomial (let paramaters):
@@ -101,6 +109,9 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
   }
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
     imageView.image = info[UIImagePickerControllerEditedImage] as? UIImage ?? nil
+    if previousImage == nil {
+      previousImage = imageView.image
+    }
     picker.dismissViewControllerAnimated(true, completion: nil)
   }
 }
