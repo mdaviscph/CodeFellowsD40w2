@@ -28,7 +28,7 @@ xcuserdata
 *.ipa
 
 .DS_Store
-keys.swift
+PhotoFilterApp/ParseStarterProject/Keys.swift
 
 # CocoaPods
 #
