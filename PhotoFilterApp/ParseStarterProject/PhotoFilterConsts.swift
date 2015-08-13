@@ -19,4 +19,7 @@ struct PhotoFilterConsts {
   static let ColorMonochromeAction = "Color Monochrome"
   static let ColorCrossPolynomialAction = "Color Cross Polynomial"
   static let HighlightShadowAdjustAction = "Highlight Shadow Adjust"
+  static let ParsePostClassname = "PhotoFilterApp"
+  static let PostImage = "Image"
+  static let PostImageFilename = "test.jpg"
 }

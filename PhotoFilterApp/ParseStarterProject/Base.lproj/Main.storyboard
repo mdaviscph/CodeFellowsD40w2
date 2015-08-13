@@ -21,7 +21,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sYY-x1-N6e">
-                                <rect key="frame" x="273" y="562" width="54" height="30"/>
+                                <rect key="frame" x="273" y="513" width="54" height="30"/>
                                 <state key="normal" title="Options">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -36,25 +36,39 @@
                                 </constraints>
                             </imageView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rDk-ZB-Kir">
-                                <rect key="frame" x="16" y="470" width="568" height="100"/>
+                                <rect key="frame" x="16" y="421" width="568" height="100"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="8gW-0y-XKA"/>
                                 </constraints>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="fHk-8z-bbw">
-                                    <size key="itemSize" width="50" height="50"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="fHk-8z-bbw">
+                                    <size key="itemSize" width="100" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="6ag-4B-cz9">
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ThumbnailCell" id="6ag-4B-cz9" customClass="ThumbnailCell" customModule="ParseStarterProject" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ryv-vF-gfw">
+                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                                </imageView>
+                                            </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="ryv-vF-gfw" secondAttribute="bottom" id="6aa-tz-qvn"/>
+                                            <constraint firstItem="ryv-vF-gfw" firstAttribute="top" secondItem="6ag-4B-cz9" secondAttribute="top" id="RTP-8V-VEB"/>
+                                            <constraint firstAttribute="trailing" secondItem="ryv-vF-gfw" secondAttribute="trailing" id="icH-we-gA4"/>
+                                            <constraint firstItem="ryv-vF-gfw" firstAttribute="leading" secondItem="6ag-4B-cz9" secondAttribute="leading" id="xyK-My-Yqp"/>
+                                        </constraints>
+                                        <connections>
+                                            <outlet property="imageView" destination="ryv-vF-gfw" id="8Td-Mk-itr"/>
+                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -109,7 +123,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="rDk-ZB-Kir" id="S4D-Nj-jXA"/>
+                        <outlet property="doneButton" destination="3ba-bk-Slo" id="LT3-k5-Fpb"/>
                         <outlet property="imageView" destination="Nld-gk-vz9" id="ngU-E2-aos"/>
+                        <outlet property="optionsButton" destination="sYY-x1-N6e" id="9TA-Et-qXf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

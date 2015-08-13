@@ -46,27 +46,3 @@ extension FilterType: Printable {
     }
   }
 }
-extension FilterType {
-  static var possibleFilters: [FilterType] {
-    
-    // Color Monochrome
-    let ciColor = CIColor(CGColor: UIColor.grayColor().CGColor)
-    let number = NSNumber(float: 0.7)
-    // Color Cross Polynomial
-    let redFloatArray: [CGFloat] = [0,0,0,0,3,0,0,0,0,0]
-    let redVector = CIVector(values: redFloatArray, count: redFloatArray.count)
-    let greenFloatArray: [CGFloat] = [0,0,0,0,0,0,0,4,0,0]
-    let greenVector = CIVector(values: greenFloatArray, count: greenFloatArray.count)
-    let blueFloatArray: [CGFloat] = [0,0,5,0,0,0,0,0,0,0]
-    let blueVector = CIVector(values: blueFloatArray, count: blueFloatArray.count)
-    // Line Overlay
-    let highlightAmount = NSNumber(float: 0.77)
-    let shadowAmount = NSNumber(float: 0.71)
-    
-    return [
-      .CIColorMonochrome(["inputColor":ciColor], ["inputIntensity":number]),
-      .CIColorCrossPolynomial(["inputRedCoefficients":redVector, "inputGreenCoefficients":greenVector, "inputBlueCoefficients":blueVector]),
-      .CIHighlightShadowAdjust(["inputHighlightAmount":highlightAmount, "inputShadowAmount":shadowAmount])
-    ]
-  }
-}
