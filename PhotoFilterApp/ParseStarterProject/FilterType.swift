@@ -6,14 +6,15 @@
 //  Copyright (c) 2015 Parse. All rights reserved.
 //
 
-import Foundation
-import CoreImage
 import UIKit
 
 enum FilterType {
-  case CIColorMonochrome ([String:CIColor], [String:NSNumber])
-  case CIColorCrossPolynomial ([String:CIVector])
-  case CIHighlightShadowAdjust ([String:NSNumber])
+  case CIColorMonochrome ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
+  case CIColorCrossPolynomial ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
+  case CIHighlightShadowAdjust ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
+  //case CIColorMonochrome ([String:CIColor], [String:NSNumber])
+  //case CIColorCrossPolynomial ([String:CIVector])
+  //case CIHighlightShadowAdjust ([String:NSNumber])  // used for Action Sheets
   var actionTitle: String {
     get {
       switch self {
@@ -23,7 +24,7 @@ enum FilterType {
       }
     }
   }
-  // name used for CIFilter(name: String)
+  // used for CIFilter(name: String)
   var name: String {
     get {
       switch self {
@@ -33,7 +34,13 @@ enum FilterType {
       }
     }
   }
-
+  // this may be possible with Swift 2.0, but for now switching to storing
+  // function reference as associated values
+  //var filterImage: (CIContext, UIImage) -> UIImage? {
+  // get {
+  //    return imageAfterFilter
+  //  }
+  //}
 }
 extension FilterType: Printable {
   var description: String {

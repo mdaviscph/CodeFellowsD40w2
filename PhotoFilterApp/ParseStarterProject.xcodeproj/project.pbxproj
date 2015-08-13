@@ -12,6 +12,7 @@
 		00B0903A1B7BCB6500BAADA6 /* ImageResizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B090391B7BCB6500BAADA6 /* ImageResizer.swift */; };
 		00B0903C1B7C00A900BAADA6 /* StoryboardConsts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B0903B1B7C00A900BAADA6 /* StoryboardConsts.swift */; };
 		00B0903E1B7C018500BAADA6 /* ThumbnailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B0903D1B7C018500BAADA6 /* ThumbnailCell.swift */; };
+		00B090401B7C2F7200BAADA6 /* FilterSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B0903F1B7C2F7200BAADA6 /* FilterSet.swift */; };
 		00FB42591B7A7B8100380671 /* FilterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FB42581B7A7B8100380671 /* FilterType.swift */; };
 		81BA814B1A49DA1800E65899 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BA814A1A49DA1800E65899 /* AppDelegate.swift */; };
 		81BA814D1A49DA1800E65899 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BA814C1A49DA1800E65899 /* ViewController.swift */; };
@@ -34,6 +35,7 @@
 		00B090391B7BCB6500BAADA6 /* ImageResizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageResizer.swift; sourceTree = "<group>"; };
 		00B0903B1B7C00A900BAADA6 /* StoryboardConsts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardConsts.swift; sourceTree = "<group>"; };
 		00B0903D1B7C018500BAADA6 /* ThumbnailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThumbnailCell.swift; sourceTree = "<group>"; };
+		00B0903F1B7C2F7200BAADA6 /* FilterSet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterSet.swift; sourceTree = "<group>"; };
 		00FB42581B7A7B8100380671 /* FilterType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterType.swift; sourceTree = "<group>"; };
 		81BA81451A49DA1800E65899 /* ParseStarterProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParseStarterProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		81BA81491A49DA1800E65899 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				81BA814C1A49DA1800E65899 /* ViewController.swift */,
 				00B0903D1B7C018500BAADA6 /* ThumbnailCell.swift */,
 				00FB42581B7A7B8100380671 /* FilterType.swift */,
+				00B0903F1B7C2F7200BAADA6 /* FilterSet.swift */,
 				00B090391B7BCB6500BAADA6 /* ImageResizer.swift */,
 				00B0903B1B7C00A900BAADA6 /* StoryboardConsts.swift */,
 				006B99661B799B5D0024A48E /* PhotoFilterConsts.swift */,
@@ -232,6 +235,7 @@
 				81BA814B1A49DA1800E65899 /* AppDelegate.swift in Sources */,
 				00B0903E1B7C018500BAADA6 /* ThumbnailCell.swift in Sources */,
 				00B0903C1B7C00A900BAADA6 /* StoryboardConsts.swift in Sources */,
+				00B090401B7C2F7200BAADA6 /* FilterSet.swift in Sources */,
 				006B99671B799B5D0024A48E /* PhotoFilterConsts.swift in Sources */,
 				00FB42591B7A7B8100380671 /* FilterType.swift in Sources */,
 				00B0903A1B7BCB6500BAADA6 /* ImageResizer.swift in Sources */,
