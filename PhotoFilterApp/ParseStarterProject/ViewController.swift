@@ -35,7 +35,7 @@ class ViewController: UIViewController {
   }
   @IBAction func doneTapped(sender: AnyObject) {
     if let image = imageView.image {
-      let reducedImage = ImageResizer.resize(image, size: CGSize(width: 600, height: 600))
+      let reducedImage = ImageResizer.resize(image, size: CGSize(width: 600, height: 600), withRoundedCorner: nil)
       if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
         let file = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
         let imagePost = PFObject(className: PhotoFilterConsts.ParsePostClassname)
@@ -98,6 +98,44 @@ class ViewController: UIViewController {
     return false
   }
   
+  private func filteredImage(image: UIImage, filterType: FilterType) -> UIImage? {
+    let context = CIContext(options: nil)
+    let parameters = parametersFor(filterType)
+    let name = filterType.name
+    switch filterType {
+    case .CIColorMonochrome(let filter):
+      return filter(name, parameters, context, image)
+    case .CIColorCrossPolynomial(let filter):
+      return filter(name, parameters, context, image)
+    case .CIHighlightShadowAdjust(let filter):
+      return filter(name, parameters, context, image)
+    }
+  }
+
+  // this would eventually be in a detail view controller that would allow the
+  // various parameters to be set based on the type of filter
+  private func parametersFor(filterType: FilterType) -> [String:AnyObject] {
+    var parameters = [String:AnyObject]()
+    switch filterType {
+    case .CIColorMonochrome:
+      parameters["inputColor"] = CIColor(CGColor: UIColor.grayColor().CGColor)
+      parameters["inputIntensity"] = NSNumber(float: 0.7)
+    case .CIColorCrossPolynomial:
+      let redFloatArray: [CGFloat] = [0,0,0,0,3,0,0,0,0,0]
+      let redVector = CIVector(values: redFloatArray, count: redFloatArray.count)
+      let greenFloatArray: [CGFloat] = [0,0,0,0,0,0,0,4,0,0]
+      let greenVector = CIVector(values: greenFloatArray, count: greenFloatArray.count)
+      let blueFloatArray: [CGFloat] = [0,0,5,0,0,0,0,0,0,0]
+      let blueVector = CIVector(values: blueFloatArray, count: blueFloatArray.count)
+      parameters["inputRedCoefficients"] = redVector
+      parameters["inputGreenCoefficients"] = greenVector
+      parameters["inputBlueCoefficients"] = blueVector
+    case .CIHighlightShadowAdjust:
+      parameters["inputHighlightAmount"] = NSNumber(float: 0.77)
+      parameters["inputShadowAmount"] = NSNumber(float: 0.71)
+    }
+    return parameters
+  }
 //  func actionSheetForFilter() {
 //    let alert = UIAlertController(title: PhotoFilterConsts.ChooseFilter, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
 //    alert.modalPresentationStyle = .Popover
@@ -131,52 +169,24 @@ extension ViewController: UICollectionViewDataSource {
   }
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.CollectionViewCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
-    var filteredImage = displayImage
-    let context = CIContext(options: nil)
     
-    if let filterSet = filterSet, displayImage = displayImage, context = context {
+    if let displayImage = displayImage, filterSet = filterSet {
       let filterType = filterSet.possibleFilters[indexPath.row]
-      let parameters = parametersFor(filterType)
-      let name = filterType.name
-      switch filterType {
-      case .CIColorMonochrome(let filter):
-          filteredImage = filter(name, parameters, context, displayImage)
-      case .CIColorCrossPolynomial(let filter):
-          filteredImage = filter(name, parameters, context, displayImage)
-      case .CIHighlightShadowAdjust(let filter):
-          filteredImage = filter(name, parameters, context, displayImage)
-      }
+      cell.thumbImage = filteredImage(displayImage, filterType: filterType)
     }
-    cell.thumbImage = filteredImage
+    else {
+      cell.thumbImage = nil
+    }
     return cell
   }
-  
-  private func parametersFor(filterType: FilterType) -> [String:AnyObject] {
-    var parameters = [String:AnyObject]()
-    switch filterType {
-    case .CIColorMonochrome:
-      parameters["inputColor"] = CIColor(CGColor: UIColor.grayColor().CGColor)
-      parameters["inputIntensity"] = NSNumber(float: 0.7)
-    case .CIColorCrossPolynomial:
-      let redFloatArray: [CGFloat] = [0,0,0,0,3,0,0,0,0,0]
-      let redVector = CIVector(values: redFloatArray, count: redFloatArray.count)
-      let greenFloatArray: [CGFloat] = [0,0,0,0,0,0,0,4,0,0]
-      let greenVector = CIVector(values: greenFloatArray, count: greenFloatArray.count)
-      let blueFloatArray: [CGFloat] = [0,0,5,0,0,0,0,0,0,0]
-      let blueVector = CIVector(values: blueFloatArray, count: blueFloatArray.count)
-      parameters["inputRedCoefficients"] = redVector
-      parameters["inputGreenCoefficients"] = greenVector
-      parameters["inputBlueCoefficients"] = blueVector
-    case .CIHighlightShadowAdjust:
-      parameters["inputHighlightAmount"] = NSNumber(float: 0.77)
-      parameters["inputShadowAmount"] = NSNumber(float: 0.71)
-    }
-    return parameters
-  }
 }
-
-extension UIViewController: UICollectionViewDelegate {
-  
+extension ViewController: UICollectionViewDelegate {
+  func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+    if let displayImage = displayImage, filterSet = filterSet {
+      let filterType = filterSet.possibleFilters[indexPath.row]
+      self.displayImage = filteredImage(displayImage, filterType: filterType)
+    }
+  }
 }
 extension UIImagePickerControllerSourceType {
   var actionTitle: String {

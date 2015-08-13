@@ -12,7 +12,10 @@ class ThumbnailCell: UICollectionViewCell {
   
   var thumbImage: UIImage? {
     didSet {
-      imageView.image = thumbImage
+      if let thumbImage = thumbImage {
+        let reducedImage = ImageResizer.resize(thumbImage, size: imageView.bounds.size, withRoundedCorner: UIColor.whiteColor())
+        imageView.image = reducedImage
+      }
     }
   }
   @IBOutlet weak var imageView: UIImageView!
