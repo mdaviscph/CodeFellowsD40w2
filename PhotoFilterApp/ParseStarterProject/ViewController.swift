@@ -9,70 +9,67 @@ import Parse
 
 class ViewController: UIViewController {
 
-  private var previousImage: UIImage?
+  // MARK: Public Properties
   var displayImage: UIImage? {
-    willSet {
-      previousImage = newValue
-    }
     didSet {
+      if originalImage == nil {
+        originalImage = displayImage
+      }
       imageView.image = displayImage
       collectionView.reloadData()
     }
   }
-  private var filterSet: FilterSet?
   
+  // MARK: Private Properties
+  private var originalImage: UIImage?
+  private var filterSet: FilterSet?
+  private lazy var context = CIContext(options: nil)
+  
+  // MARK: IBOutlets
   @IBOutlet weak var imageView: UIImageView!
-  @IBOutlet weak var optionsButton: UIButton!
-  @IBOutlet weak var doneButton: UIBarButtonItem!
+  @IBOutlet weak var busyIndicator: UIActivityIndicatorView!
+  @IBOutlet weak var collectionViewBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var collectionView: UICollectionView! {
     didSet {
       collectionView.dataSource = self
       collectionView.delegate = self
     }
   }
-  @IBAction func undoTapped(sender: AnyObject) {
-    displayImage = previousImage
+  // MARK: IBActions
+  func addTapped() {
+    actionSheetForImagePicker()
   }
-  @IBAction func doneTapped(sender: AnyObject) {
-    if let image = imageView.image {
-      let reducedImage = ImageResizer.resize(image, size: CGSize(width: 600, height: 600), withRoundedCorner: nil)
-      if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
-        let file = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
-        let imagePost = PFObject(className: PhotoFilterConsts.ParsePostClassname)
-        imagePost[PhotoFilterConsts.PostImage] = file
-        imagePost.saveInBackgroundWithBlock { (result, error) -> Void in
-          if let error = error {
-            if error.code == PFErrorCode.ErrorConnectionFailed.rawValue {
-              // handle error while in a background queue
-            }
-          }
-          if result {
-            // nothing to do except perhaps to report success
-          }
-        }
-      }
-    }
+  override func setEditing(editing: Bool, animated: Bool) {
+    super.setEditing(editing, animated: animated)
+    
   }
-  @IBAction func optionsTapped(sender: AnyObject) {
-    if let image = imageView.image {
-      //actionSheetForFilter()
-    }
-    else {
-      actionSheetForImagePicker()
-    }
+  func cancelTapped() {
+    displayImage = originalImage
   }
-  
+  func saveTapped() {
+    uploadImage()
+  }
+  // MARK: Life Cycle Methods
   override func viewDidLoad() {
     super.viewDidLoad()
-    
+    navigationItem
+    navigationItem.leftBarButtonItem = editButtonItem()
+    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addTapped")
+    if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
+      UIView.animateWithDuration(0.3) { () -> Void in
+        self.collectionViewBottomConstraint.constant = 0
+        self.view.layoutIfNeeded()
+      }
+    }
     filterSet = FilterSet()
   }
-  
-  func actionSheetForImagePicker() {
+  // MARK: Private Helper Methods
+  private func actionSheetForImagePicker() {
     let alert = UIAlertController(title: PhotoFilterConsts.ImportPhotoFrom, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
     alert.modalPresentationStyle = .Popover
-    alert.popoverPresentationController?.sourceView = view
-    alert.popoverPresentationController?.sourceRect = optionsButton.frame
+    alert.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
+    //alert.popoverPresentationController?.sourceView = view
+    //alert.popoverPresentationController?.sourceRect = optionsButton.frame
     for sourceType in UIImagePickerControllerSourceType.allCases {
       if UIImagePickerController.isSourceTypeAvailable(sourceType) {
         let sourceAction = UIAlertAction(title: sourceType.actionTitle, style: UIAlertActionStyle.Destructive) { (action) -> Void in
@@ -86,7 +83,7 @@ class ViewController: UIViewController {
     presentViewController(alert, animated: true, completion: nil)
   }
   
-  func startImagePicker(sourceType: UIImagePickerControllerSourceType) -> Bool {
+  private func startImagePicker(sourceType: UIImagePickerControllerSourceType) -> Bool {
     let imagePC = UIImagePickerController()
     imagePC.delegate = self
     imagePC.allowsEditing = true
@@ -99,7 +96,6 @@ class ViewController: UIViewController {
   }
   
   private func filteredImage(image: UIImage, filterType: FilterType) -> UIImage? {
-    let context = CIContext(options: nil)
     let parameters = parametersFor(filterType)
     let name = filterType.name
     switch filterType {
@@ -151,8 +147,31 @@ class ViewController: UIViewController {
 //    alert.addAction(cancelAction)
 //    presentViewController(alert, animated: true, completion: nil)
 //  }
+
+  private func uploadImage() {
+    if let image = imageView.image {
+      let reducedImage = ImageResizer.resize(image, size: CGSize(width: 600, height: 600), withRoundedCorner: nil)
+      if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
+        let pfFile = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
+        let pfObject = PFObject(className: PhotoFilterConsts.ParsePostClassname)
+        pfObject[PhotoFilterConsts.PostImage] = pfFile
+        pfObject.saveInBackgroundWithBlock { (result, error) -> Void in
+          if let error = error {
+            if error.code == PFErrorCode.ErrorConnectionFailed.rawValue {
+              // handle error while in a background queue
+            }
+          }
+          if result {
+            // nothing to do except perhaps to report success
+          }
+        }
+      }
+    }
+  }
 }
 
+// MARK: UIImagePickerControllerDelegate
+// MARK: UINavigationControllerDelegate
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   func imagePickerControllerDidCancel(picker: UIImagePickerController) {
     picker.dismissViewControllerAnimated(true, completion: nil)
@@ -162,17 +181,19 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     picker.dismissViewControllerAnimated(true, completion: nil)
   }
 }
-
+// MARK: UICollectionViewDataSource
 extension ViewController: UICollectionViewDataSource {
   func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return filterSet?.possibleFilters.count ?? 0
   }
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.CollectionViewCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
+    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.ThumbnailCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
     
     if let displayImage = displayImage, filterSet = filterSet {
       let filterType = filterSet.possibleFilters[indexPath.row]
+      busyIndicator.startAnimating()
       cell.thumbImage = filteredImage(displayImage, filterType: filterType)
+      busyIndicator.stopAnimating()
     }
     else {
       cell.thumbImage = nil
@@ -180,14 +201,18 @@ extension ViewController: UICollectionViewDataSource {
     return cell
   }
 }
+// MARK: UICollectionViewDelegate
 extension ViewController: UICollectionViewDelegate {
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     if let displayImage = displayImage, filterSet = filterSet {
       let filterType = filterSet.possibleFilters[indexPath.row]
+      busyIndicator.startAnimating()
       self.displayImage = filteredImage(displayImage, filterType: filterType)
+      busyIndicator.stopAnimating()
     }
   }
 }
+// MARK: UICollectionViewDataSource
 extension UIImagePickerControllerSourceType {
   var actionTitle: String {
     get {

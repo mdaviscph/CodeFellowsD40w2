@@ -9,7 +9,8 @@
 import UIKit
 
 class ThumbnailCell: UICollectionViewCell {
-  
+ 
+  // MARK: Public Properties
   var thumbImage: UIImage? {
     didSet {
       if let thumbImage = thumbImage {
@@ -18,5 +19,6 @@ class ThumbnailCell: UICollectionViewCell {
       }
     }
   }
+  // IBOutlets
   @IBOutlet weak var imageView: UIImageView!
 }

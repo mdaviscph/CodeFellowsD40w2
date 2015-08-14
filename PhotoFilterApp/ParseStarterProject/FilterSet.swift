@@ -10,6 +10,7 @@ import UIKit
 
 class FilterSet {
   
+  // MARK: Public Properties
   var possibleFilters = [FilterType]()
   
   init() {
@@ -17,6 +18,7 @@ class FilterSet {
     possibleFilters.append(FilterType.CIColorCrossPolynomial(imageAfterFilter))
     possibleFilters.append(FilterType.CIHighlightShadowAdjust(imageAfterFilter))
   }
+  // MARK: Private Methods
   private  func imageAfterFilter(name: String, parameters: [String:AnyObject], context: CIContext, image: UIImage) -> UIImage? {
     let ciImage = CIImage(image: image)
     let filter = CIFilter(name: name, withInputParameters: parameters)

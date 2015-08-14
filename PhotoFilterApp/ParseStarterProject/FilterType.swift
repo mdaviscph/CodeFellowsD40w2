@@ -12,9 +12,8 @@ enum FilterType {
   case CIColorMonochrome ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
   case CIColorCrossPolynomial ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
   case CIHighlightShadowAdjust ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
-  //case CIColorMonochrome ([String:CIColor], [String:NSNumber])
-  //case CIColorCrossPolynomial ([String:CIVector])
-  //case CIHighlightShadowAdjust ([String:NSNumber])  // used for Action Sheets
+  
+  // MARK: Public Properties
   var actionTitle: String {
     get {
       switch self {
@@ -42,6 +41,7 @@ enum FilterType {
   //  }
   //}
 }
+// MARK: Printable
 extension FilterType: Printable {
   var description: String {
     get {

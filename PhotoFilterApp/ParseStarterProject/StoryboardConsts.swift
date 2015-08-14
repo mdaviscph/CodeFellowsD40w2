@@ -9,5 +9,7 @@
 import Foundation
 
 struct StoryboardConsts {
-  static let CollectionViewCellReuseIdentifier = "ThumbnailCell"
+  static let ThumbnailCellReuseIdentifier = "ThumbnailCell"
+  static let ParseImageCellReuseIdentifier = "ParseImageCell"
+  static let ShowGallerySequeIdentifier = "ShowGallery"
 }
