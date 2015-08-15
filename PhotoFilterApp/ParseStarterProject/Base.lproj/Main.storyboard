@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="OGG-aV-sZ2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="OGG-aV-sZ2">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
@@ -26,7 +26,7 @@
                                     <constraint firstAttribute="width" secondItem="Nld-gk-vz9" secondAttribute="height" multiplier="1:1" id="aC4-Cx-KfB"/>
                                 </constraints>
                             </imageView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rDk-ZB-Kir">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="rDk-ZB-Kir">
                                 <rect key="frame" x="16" y="443" width="568" height="100"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -59,7 +59,7 @@
                                             <constraint firstItem="ryv-vF-gfw" firstAttribute="leading" secondItem="6ag-4B-cz9" secondAttribute="leading" id="xyK-My-Yqp"/>
                                         </constraints>
                                         <connections>
-                                            <outlet property="imageView" destination="ryv-vF-gfw" id="8Td-Mk-itr"/>
+                                            <outlet property="imageView" destination="ryv-vF-gfw" id="Jwr-6o-itQ"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -126,6 +126,7 @@
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="pKM-6Q-KsX">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="LeM-pg-c1l">
                             <size key="itemSize" width="100" height="100"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -153,7 +154,7 @@
                                     <constraint firstAttribute="bottom" secondItem="DZG-r4-gat" secondAttribute="bottom" id="l7v-br-O8M"/>
                                 </constraints>
                                 <connections>
-                                    <outlet property="imageView" destination="DZG-r4-gat" id="NIY-fq-GGm"/>
+                                    <outlet property="imageView" destination="DZG-r4-gat" id="aew-s5-MbX"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>

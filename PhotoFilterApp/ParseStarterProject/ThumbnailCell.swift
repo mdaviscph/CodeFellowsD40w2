@@ -13,7 +13,7 @@ class ThumbnailCell: UICollectionViewCell {
   // MARK: Public Properties
   var thumbImage: UIImage? {
     didSet {
-      if let thumbImage = thumbImage {
+      if let thumbImage = thumbImage, imageView = imageView {
         let reducedImage = ImageResizer.resize(thumbImage, size: imageView.bounds.size, withRoundedCorner: UIColor.whiteColor())
         imageView.image = reducedImage
       }

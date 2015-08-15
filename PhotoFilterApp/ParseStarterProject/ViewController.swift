@@ -12,23 +12,33 @@ class ViewController: UIViewController {
   // MARK: Public Properties
   var displayImage: UIImage? {
     didSet {
-      if originalImage == nil {
-        originalImage = displayImage
-      }
       imageView.image = displayImage
       collectionView.reloadData()
     }
   }
   
   // MARK: Private Properties
-  private var originalImage: UIImage?
+  private var originalNewImage: UIImage? {
+    didSet {
+      if originalNewImage != nil && UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
+        navigationItem.leftBarButtonItem = editButtonItem()
+        setEditing(false, animated: true)
+      }
+    }
+  }
   private var filterSet: FilterSet?
   private lazy var context = CIContext(options: nil)
   
   // MARK: IBOutlets
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var busyIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var collectionViewBottomConstraint: NSLayoutConstraint!
+  @IBOutlet weak var collectionViewBottomConstraint: NSLayoutConstraint! {
+    didSet {
+      if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
+        collectionViewBottomConstraint.constant = StoryboardConsts.CollectionViewBottomConstantHidden
+      }
+    }
+  }
   @IBOutlet weak var collectionView: UICollectionView! {
     didSet {
       collectionView.dataSource = self
@@ -37,34 +47,56 @@ class ViewController: UIViewController {
   }
   // MARK: IBActions
   func addTapped() {
-    actionSheetForImagePicker()
+    actionSheetForAddTapped()
   }
+  // setEditing (and left Edit/Done button) is only used for iPhones
   override func setEditing(editing: Bool, animated: Bool) {
     super.setEditing(editing, animated: animated)
-    
+    let collectionViewBottomConstant: CGFloat
+    if editing {
+      collectionViewBottomConstant = StoryboardConsts.CollectionViewBottomConstantShow
+      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancelTapped")    }
+    else {
+      collectionViewBottomConstant = StoryboardConsts.CollectionViewBottomConstantHidden
+      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addTapped")
+    }
+    if animated {
+      UIView.animateWithDuration(StoryboardConsts.CollectionViewAnimationDuration) { () -> Void in
+        self.collectionViewBottomConstraint.constant = collectionViewBottomConstant
+        self.view.layoutIfNeeded()
+      }
+    } else {
+        collectionViewBottomConstraint.constant = collectionViewBottomConstant
+        view.layoutIfNeeded()
+    }
   }
   func cancelTapped() {
-    displayImage = originalImage
+    displayImage = originalNewImage
   }
   func saveTapped() {
     uploadImage()
   }
+  
   // MARK: Life Cycle Methods
   override func viewDidLoad() {
     super.viewDidLoad()
-    navigationItem
-    navigationItem.leftBarButtonItem = editButtonItem()
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addTapped")
     if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
-      UIView.animateWithDuration(0.3) { () -> Void in
-        self.collectionViewBottomConstraint.constant = 0
-        self.view.layoutIfNeeded()
-      }
+      setEditing(false, animated: true)
     }
     filterSet = FilterSet()
   }
+  
+  // MARK: - Navigation
+  override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    if segue.identifier == StoryboardConsts.ShowGallerySequeIdentifier, let galleryVC = segue.destinationViewController as? GalleryCollectionViewController {
+      galleryVC.delegate = self
+      galleryVC.targetImageSize = imageView.frame.size
+    }
+  }
+  
   // MARK: Private Helper Methods
-  private func actionSheetForImagePicker() {
+  private func actionSheetForAddTapped() {
     let alert = UIAlertController(title: PhotoFilterConsts.ImportPhotoFrom, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
     alert.modalPresentationStyle = .Popover
     alert.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
@@ -72,13 +104,17 @@ class ViewController: UIViewController {
     //alert.popoverPresentationController?.sourceRect = optionsButton.frame
     for sourceType in UIImagePickerControllerSourceType.allCases {
       if UIImagePickerController.isSourceTypeAvailable(sourceType) {
-        let sourceAction = UIAlertAction(title: sourceType.actionTitle, style: UIAlertActionStyle.Destructive) { (action) -> Void in
+        let sourceAction = UIAlertAction(title: sourceType.actionTitle, style: .Default) { (action) -> Void in
           self.startImagePicker(sourceType)
         }
         alert.addAction(sourceAction)
       }
     }
+    let galleryAction = UIAlertAction(title: PhotoFilterConsts.GalleryAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+      self.performSegueWithIdentifier(StoryboardConsts.ShowGallerySequeIdentifier, sender: self.navigationItem.rightBarButtonItem)
+    }
     let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel, handler: nil)
+    alert.addAction(galleryAction)
     alert.addAction(cancelAction)
     presentViewController(alert, animated: true, completion: nil)
   }
@@ -132,21 +168,6 @@ class ViewController: UIViewController {
     }
     return parameters
   }
-//  func actionSheetForFilter() {
-//    let alert = UIAlertController(title: PhotoFilterConsts.ChooseFilter, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
-//    alert.modalPresentationStyle = .Popover
-//    alert.popoverPresentationController?.barButtonItem = doneButton
-//    
-//    for filterType in FilterType.possibleFilters {
-//      let filterAction = UIAlertAction(title: filterType.actionTitle, style: UIAlertActionStyle.Default) { (action) -> Void in
-//        self.applyFilter(filterType)
-//      }
-//      alert.addAction(filterAction)
-//    }
-//    let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel, handler: nil)
-//    alert.addAction(cancelAction)
-//    presentViewController(alert, animated: true, completion: nil)
-//  }
 
   private func uploadImage() {
     if let image = imageView.image {
@@ -177,7 +198,10 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     picker.dismissViewControllerAnimated(true, completion: nil)
   }
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-    displayImage = info[UIImagePickerControllerEditedImage] as? UIImage ?? nil
+    if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
+      displayImage = image
+      originalNewImage = image
+    }
     picker.dismissViewControllerAnimated(true, completion: nil)
   }
 }
@@ -212,7 +236,15 @@ extension ViewController: UICollectionViewDelegate {
     }
   }
 }
-// MARK: UICollectionViewDataSource
+// MARK: ImageSelectedDelegate
+extension ViewController: ImageSelectedDelegate {
+  func controllerDidSelectImage(image: UIImage) {
+    displayImage = image
+    originalNewImage = image
+  }
+}
+
+// MARK: UIImagePickerControllerSourceType extension
 extension UIImagePickerControllerSourceType {
   var actionTitle: String {
     get {
@@ -226,6 +258,5 @@ extension UIImagePickerControllerSourceType {
   // used for enumeration; tried to get GeneratorOf<T> to work but not successful
   static var allCases: [UIImagePickerControllerSourceType] { return [.Camera, .SavedPhotosAlbum, .PhotoLibrary] }
 }
-
 
 

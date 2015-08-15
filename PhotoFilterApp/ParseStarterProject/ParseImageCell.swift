@@ -13,7 +13,7 @@ class ParseImageCell: UITableViewCell {
   // MARK: Public Properties
   var parseImage: UIImage? {
     didSet {
-      if let parseImage = parseImage {
+      if let parseImage = parseImage, reducedImageView = reducedImageView  {
         let reducedImage = ImageResizer.resize(parseImage, size: reducedImageView.bounds.size, withRoundedCorner: nil)
         reducedImageView.image = reducedImage
       }

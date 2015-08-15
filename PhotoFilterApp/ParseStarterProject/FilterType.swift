@@ -14,15 +14,6 @@ enum FilterType {
   case CIHighlightShadowAdjust ((String, [String:AnyObject], CIContext, UIImage) -> UIImage?)
   
   // MARK: Public Properties
-  var actionTitle: String {
-    get {
-      switch self {
-      case .CIColorMonochrome: return PhotoFilterConsts.ColorMonochromeAction
-      case .CIColorCrossPolynomial: return PhotoFilterConsts.ColorCrossPolynomialAction
-      case .CIHighlightShadowAdjust: return PhotoFilterConsts.HighlightShadowAdjustAction
-      }
-    }
-  }
   // used for CIFilter(name: String)
   var name: String {
     get {
@@ -33,13 +24,6 @@ enum FilterType {
       }
     }
   }
-  // this may be possible with Swift 2.0, but for now switching to storing
-  // function reference as associated values
-  //var filterImage: (CIContext, UIImage) -> UIImage? {
-  // get {
-  //    return imageAfterFilter
-  //  }
-  //}
 }
 // MARK: Printable
 extension FilterType: Printable {
