@@ -5,7 +5,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -20,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Nld-gk-vz9">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image from unsplash.com" translatesAutoresizingMaskIntoConstraints="NO" id="Nld-gk-vz9">
                                 <rect key="frame" x="-16" y="72" width="632" height="632"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Nld-gk-vz9" secondAttribute="height" multiplier="1:1" id="aC4-Cx-KfB"/>
@@ -64,24 +63,19 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="hlL-OP-DeF">
-                                <rect key="frame" x="282" y="282" width="37" height="37"/>
-                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Nld-gk-vz9" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="8" symbolic="YES" id="2BT-3j-ydP"/>
+                            <constraint firstItem="Nld-gk-vz9" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="2BT-3j-ydP"/>
                             <constraint firstItem="rDk-ZB-Kir" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="4Eg-M4-Md6"/>
                             <constraint firstItem="rDk-ZB-Kir" firstAttribute="top" secondItem="Nld-gk-vz9" secondAttribute="bottom" constant="8" symbolic="YES" id="9b1-ZO-iVb"/>
-                            <constraint firstAttribute="centerY" secondItem="hlL-OP-DeF" secondAttribute="centerY" id="GrX-pQ-Qom"/>
-                            <constraint firstAttribute="centerX" secondItem="hlL-OP-DeF" secondAttribute="centerX" id="LCD-ZS-zCJ"/>
-                            <constraint firstAttribute="width" secondItem="Nld-gk-vz9" secondAttribute="width" multiplier="0.95" priority="998" id="Rbu-Du-J75"/>
+                            <constraint firstItem="Nld-gk-vz9" firstAttribute="width" relation="lessThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="width" priority="998" id="Rbu-Du-J75"/>
                             <constraint firstAttribute="centerX" secondItem="rDk-ZB-Kir" secondAttribute="centerX" id="UZs-aL-e2R"/>
-                            <constraint firstAttribute="height" secondItem="Nld-gk-vz9" secondAttribute="height" multiplier="0.95" priority="998" id="W0g-XT-nl5"/>
+                            <constraint firstItem="Nld-gk-vz9" firstAttribute="height" relation="lessThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="height" priority="998" id="W0g-XT-nl5"/>
                             <constraint firstItem="rDk-ZB-Kir" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="ZpP-5C-yeq"/>
                             <constraint firstAttribute="centerX" secondItem="Nld-gk-vz9" secondAttribute="centerX" id="jCF-WH-hyc"/>
-                            <constraint firstItem="Nld-gk-vz9" firstAttribute="height" relation="lessThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.95" priority="998" id="pTw-mR-9mC"/>
-                            <constraint firstItem="Nld-gk-vz9" firstAttribute="width" relation="lessThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.95" priority="998" id="xkG-Ca-Zo5"/>
+                            <constraint firstItem="Nld-gk-vz9" firstAttribute="height" relation="lessThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="height" priority="998" id="pTw-mR-9mC"/>
+                            <constraint firstItem="Nld-gk-vz9" firstAttribute="width" relation="lessThanOrEqual" secondItem="8bC-Xf-vdC" secondAttribute="width" priority="998" id="xkG-Ca-Zo5"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="rDk-ZB-Kir" secondAttribute="bottom" constant="8" symbolic="YES" id="xpf-xa-ZSn"/>
                         </constraints>
                         <variation key="default">
@@ -108,7 +102,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="3yy-Us-iIo"/>
                     <connections>
-                        <outlet property="busyIndicator" destination="hlL-OP-DeF" id="k7P-ks-rYI"/>
                         <outlet property="collectionView" destination="rDk-ZB-Kir" id="S4D-Nj-jXA"/>
                         <outlet property="collectionViewBottomConstraint" destination="xpf-xa-ZSn" id="AFc-Gj-zxO"/>
                         <outlet property="imageView" destination="Nld-gk-vz9" id="ngU-E2-aos"/>
@@ -169,7 +162,7 @@
             </objects>
             <point key="canvasLocation" x="2827" y="167"/>
         </scene>
-        <!--Item-->
+        <!--Saved-->
         <scene sceneID="LSo-yu-R9P">
             <objects>
                 <tableViewController id="jmx-Gf-xVA" customClass="ParseImagesViewController" customModule="ParseStarterProject" customModuleProvider="target" sceneMemberID="viewController">
@@ -206,17 +199,17 @@
                             <outlet property="delegate" destination="jmx-Gf-xVA" id="92X-vU-zan"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Item" id="D3y-9p-NXP"/>
+                    <tabBarItem key="tabBarItem" title="Saved" id="D3y-9p-NXP"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RuJ-Bl-mcm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1343" y="916"/>
         </scene>
-        <!--Item-->
+        <!--Edit-->
         <scene sceneID="pNQ-Gm-enf">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="W55-s7-2l9" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="6Eb-5C-dNh"/>
+                    <tabBarItem key="tabBarItem" title="Edit" id="6Eb-5C-dNh"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="i4k-HY-IEr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -251,4 +244,7 @@
             <point key="canvasLocation" x="615" y="167"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Image from unsplash.com" width="1280" height="853"/>
+    </resources>
 </document>

@@ -20,11 +20,10 @@ class ParseImagesViewController: UITableViewController {
     
     // Uncomment the following line to preserve selection between presentations
     // clearsSelectionOnViewWillAppear = false
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // navigationItem.rightBarButtonItem = self.editButtonItem()
 
     let query = PFQuery(className: PhotoFilterConsts.ParsePostClassname)
     query.whereKeyExists(PhotoFilterConsts.PostImage)
+    let date = NSDate()
     query.findObjectsInBackgroundWithBlock { (pfObjects, error) -> Void in
       if let pfObjects = pfObjects as? [PFObject] {
         for pfObject in pfObjects {
@@ -32,7 +31,10 @@ class ParseImagesViewController: UITableViewController {
             pfFile.getDataInBackgroundWithBlock { (data, error) -> Void in
               if let data = data, image = UIImage(data: data) {
                 self.cloudImages.append(image)
-                self.tableView.reloadData()
+                NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                  println(String(format: "findObjectsInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
+                  self.tableView.reloadData()
+                }
               }
             }
           }

@@ -28,7 +28,9 @@ class GalleryCollectionViewController: UICollectionViewController {
     // leaving this call in caused the IBOutlet for the UIImageView to not be setup
     //collectionView!.registerClass(ThumbnailCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     
+    let date = NSDate()
     imagesMetaData = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
+    println(String(format: "fetchAssetsWithMediaType in %0.4f seconds", -date.timeIntervalSinceNow))
   }
   
   // MARK: UICollectionViewDataSource
@@ -38,6 +40,7 @@ class GalleryCollectionViewController: UICollectionViewController {
 
   override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
+    cell.thumbImage = nil
     var targetSize = StoryboardConsts.GalleryCellTargetSize
     if let size = collectionView.layoutAttributesForItemAtIndexPath(indexPath)?.bounds.size {
       targetSize = size
@@ -66,10 +69,14 @@ extension GalleryCollectionViewController: UICollectionViewDelegate {
       let options = PHImageRequestOptions()
       options.synchronous = true
       NSOperationQueue().addOperationWithBlock { () -> Void in
+        let date = NSDate()
         let requestId = PHCachingImageManager().requestImageForAsset(asset, targetSize: self.targetImageSize, contentMode: PHImageContentMode.AspectFill, options: options) { (image, info) -> Void in
           if let image = image {
-            self.delegate?.controllerDidSelectImage(image)
-            self.navigationController?.popViewControllerAnimated(true)
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+              println(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))
+              self.navigationController?.popViewControllerAnimated(true)
+              self.delegate?.controllerDidSelectImage(image)
+            }
           }
           else {
             // do something with dictionary possibly using PHImageCancelledKey or PHImageErrorKey

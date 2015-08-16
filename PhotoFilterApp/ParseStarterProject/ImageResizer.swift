@@ -13,6 +13,8 @@ class ImageResizer {
   // MARK: Class Methods
   class func resize(image: UIImage, size: CGSize, withRoundedCorner color: UIColor?) -> UIImage {
     // fastest way to resize an image; from nshipster.com
+    print("image resized: \(image.size)->")
+    let date = NSDate()
     UIGraphicsBeginImageContext(size)
     let rect = CGRect(origin: CGPoint.zeroPoint, size: size)
     image.drawInRect(rect)
@@ -25,6 +27,7 @@ class ImageResizer {
     }
     let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
+    println(String(format: "\(resizedImage.size) in %0.4f seconds", -date.timeIntervalSinceNow))
     return resizedImage
   }
 }

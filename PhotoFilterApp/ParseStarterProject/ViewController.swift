@@ -12,78 +12,82 @@ class ViewController: UIViewController {
   // MARK: Public Properties
   var displayImage: UIImage? {
     didSet {
-      imageView.image = displayImage
+      let date = NSDate()
+      if let displayImage = displayImage {
+        let reducedImage = ImageResizer.resize(displayImage, size: imageView.frame.size, withRoundedCorner: nil)
+        imageView.image = reducedImage
+      } else {
+        imageView.image = nil
+      }
       collectionView.reloadData()
     }
   }
   
   // MARK: Private Properties
-  private var originalNewImage: UIImage? {
-    didSet {
-      if originalNewImage != nil && UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
-        navigationItem.leftBarButtonItem = editButtonItem()
-        setEditing(false, animated: true)
-      }
-    }
-  }
+  private var originalNewImage: UIImage?
   private var filterSet: FilterSet?
-  private lazy var context = CIContext(options: nil)
+  
+  //private lazy var context = CIContext(options: nil)
+  private lazy var context = CIContext(EAGLContext: EAGLContext(API: EAGLRenderingAPI.OpenGLES2), options: [kCIContextWorkingColorSpace:NSNull()])
   
   // MARK: IBOutlets
   @IBOutlet weak var imageView: UIImageView!
-  @IBOutlet weak var busyIndicator: UIActivityIndicatorView!
-  @IBOutlet weak var collectionViewBottomConstraint: NSLayoutConstraint! {
-    didSet {
-      if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
-        collectionViewBottomConstraint.constant = StoryboardConsts.CollectionViewBottomConstantHidden
-      }
-    }
-  }
+  @IBOutlet weak var collectionViewBottomConstraint: NSLayoutConstraint!
   @IBOutlet weak var collectionView: UICollectionView! {
     didSet {
       collectionView.dataSource = self
       collectionView.delegate = self
     }
   }
-  // MARK: IBActions
+  
+  // MARK: Button Related Methods
   func addTapped() {
     actionSheetForAddTapped()
+    setNavigationItemButtons(true)
   }
-  // setEditing (and left Edit/Done button) is only used for iPhones
-  override func setEditing(editing: Bool, animated: Bool) {
-    super.setEditing(editing, animated: animated)
+  func editTapped() {
+    setNavigationItemButtons(true)
+  }
+  func undoTapped() {
+    displayImage = originalNewImage
+  }
+  func doneTapped() {
+    actionSheetForDoneTapped()
+    setNavigationItemButtons(false)
+  }
+  func cancelAdd() {
+    setNavigationItemButtons(false)
+  }
+  func cancelSave() {
+    
+  }
+
+  private func setNavigationItemButtons(editing: Bool) {
     let collectionViewBottomConstant: CGFloat
     if editing {
       collectionViewBottomConstant = StoryboardConsts.CollectionViewBottomConstantShow
-      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Cancel, target: self, action: "cancelTapped")    }
+      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Undo, target: self, action: "undoTapped")
+      navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneTapped")
+    }
     else {
       collectionViewBottomConstant = StoryboardConsts.CollectionViewBottomConstantHidden
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addTapped")
+      if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone && originalNewImage != nil {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editTapped")
+      }
     }
-    if animated {
+    if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
       UIView.animateWithDuration(StoryboardConsts.CollectionViewAnimationDuration) { () -> Void in
         self.collectionViewBottomConstraint.constant = collectionViewBottomConstant
         self.view.layoutIfNeeded()
       }
-    } else {
-        collectionViewBottomConstraint.constant = collectionViewBottomConstant
-        view.layoutIfNeeded()
     }
   }
-  func cancelTapped() {
-    displayImage = originalNewImage
-  }
-  func saveTapped() {
-    uploadImage()
-  }
-  
+
   // MARK: Life Cycle Methods
   override func viewDidLoad() {
     super.viewDidLoad()
-    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addTapped")
-    if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
-      setEditing(false, animated: true)
-    }
+    setNavigationItemButtons(false)
     filterSet = FilterSet()
   }
   
@@ -97,9 +101,9 @@ class ViewController: UIViewController {
   
   // MARK: Private Helper Methods
   private func actionSheetForAddTapped() {
-    let alert = UIAlertController(title: PhotoFilterConsts.ImportPhotoFrom, message: PhotoFilterConsts.PickOne, preferredStyle: .ActionSheet)
+    let alert = UIAlertController(title: PhotoFilterConsts.ImportPhotoFrom, message: PhotoFilterConsts.PickImport, preferredStyle: .ActionSheet)
     alert.modalPresentationStyle = .Popover
-    alert.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
+    alert.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
     //alert.popoverPresentationController?.sourceView = view
     //alert.popoverPresentationController?.sourceRect = optionsButton.frame
     for sourceType in UIImagePickerControllerSourceType.allCases {
@@ -113,8 +117,33 @@ class ViewController: UIViewController {
     let galleryAction = UIAlertAction(title: PhotoFilterConsts.GalleryAction, style: UIAlertActionStyle.Default) { (action) -> Void in
       self.performSegueWithIdentifier(StoryboardConsts.ShowGallerySequeIdentifier, sender: self.navigationItem.rightBarButtonItem)
     }
-    let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel, handler: nil)
+    let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel) { (action) -> Void in
+      self.cancelAdd()
+    }
     alert.addAction(galleryAction)
+    alert.addAction(cancelAction)
+    presentViewController(alert, animated: true, completion: nil)
+  }
+  
+  private func actionSheetForDoneTapped() {
+    let alert = UIAlertController(title: PhotoFilterConsts.SaveOrShare, message: PhotoFilterConsts.PickSave, preferredStyle: .ActionSheet)
+    alert.modalPresentationStyle = .Popover
+    alert.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
+    let uploadAction = UIAlertAction(title: PhotoFilterConsts.UploadAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+      self.uploadImage()
+    }
+    let saveToPhoneAction = UIAlertAction(title: PhotoFilterConsts.SaveToPhoneAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+      self.saveImageToPhone()
+    }
+    let shareOnTwitterAction = UIAlertAction(title: PhotoFilterConsts.ShareOnTwitterAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+      self.shareImageOnTwitter()
+    }
+    let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel) { (action) -> Void in
+      self.cancelSave()
+    }
+    alert.addAction(uploadAction)
+    alert.addAction(saveToPhoneAction)
+    alert.addAction(shareOnTwitterAction)
     alert.addAction(cancelAction)
     presentViewController(alert, animated: true, completion: nil)
   }
@@ -170,8 +199,8 @@ class ViewController: UIViewController {
   }
 
   private func uploadImage() {
-    if let image = imageView.image {
-      let reducedImage = ImageResizer.resize(image, size: CGSize(width: 600, height: 600), withRoundedCorner: nil)
+    if let image = displayImage {
+      let reducedImage = ImageResizer.resize(image, size: StoryboardConsts.UploadImageSize, withRoundedCorner: nil)
       if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
         let pfFile = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
         let pfObject = PFObject(className: PhotoFilterConsts.ParsePostClassname)
@@ -189,20 +218,28 @@ class ViewController: UIViewController {
       }
     }
   }
+  
+  private func saveImageToPhone() {
+  
+  }
+  private func shareImageOnTwitter() {
+  
+  }
 }
 
 // MARK: UIImagePickerControllerDelegate
 // MARK: UINavigationControllerDelegate
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    picker.dismissViewControllerAnimated(true, completion: nil)
+    picker.dismissViewControllerAnimated(false, completion: nil)
+    cancelAdd()
   }
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    picker.dismissViewControllerAnimated(false, completion: nil)
     if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
       displayImage = image
       originalNewImage = image
     }
-    picker.dismissViewControllerAnimated(true, completion: nil)
   }
 }
 // MARK: UICollectionViewDataSource
@@ -212,15 +249,20 @@ extension ViewController: UICollectionViewDataSource {
   }
   func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.ThumbnailCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
-    
+    let tag = ++cell.tag
+    cell.thumbImage = nil
     if let displayImage = displayImage, filterSet = filterSet {
       let filterType = filterSet.possibleFilters[indexPath.row]
-      busyIndicator.startAnimating()
-      cell.thumbImage = filteredImage(displayImage, filterType: filterType)
-      busyIndicator.stopAnimating()
-    }
-    else {
-      cell.thumbImage = nil
+      let date = NSDate()
+      NSOperationQueue().addOperationWithBlock { () -> Void in
+        let image = self.filteredImage(displayImage, filterType: filterType)
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+          if cell.tag == tag {
+            cell.thumbImage = image
+          }
+          println(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
+        }
+      }
     }
     return cell
   }
@@ -230,9 +272,9 @@ extension ViewController: UICollectionViewDelegate {
   func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     if let displayImage = displayImage, filterSet = filterSet {
       let filterType = filterSet.possibleFilters[indexPath.row]
-      busyIndicator.startAnimating()
+      let date = NSDate()
       self.displayImage = filteredImage(displayImage, filterType: filterType)
-      busyIndicator.stopAnimating()
+      println(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
     }
   }
 }
