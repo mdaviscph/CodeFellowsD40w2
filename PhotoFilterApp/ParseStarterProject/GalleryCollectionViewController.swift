@@ -9,15 +9,30 @@
 import UIKit
 import Photos
 
-let reuseIdentifier = StoryboardConsts.ThumbnailCellReuseIdentifier
-
 class GalleryCollectionViewController: UICollectionViewController {
 
+  // MARK: Public Properties
   weak var delegate: ImageSelectedDelegate?
   var targetImageSize = StoryboardConsts.DisplayImageTargetSize
   
+  // MARK: Private Properties
   private var imagesMetaData: PHFetchResult?
+  private var collectionViewScale: CGFloat = 1
   
+  // MARK: Action Selector Methods
+  func pinchGesture(sender: UIPinchGestureRecognizer) {
+    switch sender.state {
+    case .Began:
+      collectionViewScale = sender.scale
+    case .Ended:
+      collectionViewScale *= sender.scale
+      scaleCollectionView(collectionViewScale)
+    default:
+      break
+    }
+  }
+
+  // MARK: Lifecycle Methods
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -28,9 +43,26 @@ class GalleryCollectionViewController: UICollectionViewController {
     // leaving this call in caused the IBOutlet for the UIImageView to not be setup
     //collectionView!.registerClass(ThumbnailCell.self, forCellWithReuseIdentifier: reuseIdentifier)
     
+    let recognizer = UIPinchGestureRecognizer(target: self, action: "pinchGesture:")
+    collectionView?.addGestureRecognizer(recognizer)
+    
     let date = NSDate()
     imagesMetaData = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
     println(String(format: "fetchAssetsWithMediaType in %0.4f seconds", -date.timeIntervalSinceNow))
+  }
+  
+  // MARK: Private Helper Methods
+  func scaleCollectionView(scale: CGFloat) {
+    if let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
+      collectionView!.performBatchUpdates({ () -> Void in
+        layout.itemSize *= scale
+        layout.itemSize.width = min(max(layout.itemSize.width, StoryboardConsts.GalleryCellMinimumSize), StoryboardConsts.GalleryCellMaximumSize)
+        layout.itemSize.height = min(max(layout.itemSize.height, StoryboardConsts.GalleryCellMinimumSize), StoryboardConsts.GalleryCellMaximumSize)
+        layout.invalidateLayout()
+        }, completion: { (finished) -> Void in
+          collectionView?.reloadData()    // breakpoint shows this in main-thread
+      })
+    }
   }
   
   // MARK: UICollectionViewDataSource
@@ -39,7 +71,7 @@ class GalleryCollectionViewController: UICollectionViewController {
   }
 
   override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
+    let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.ThumbnailCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
     cell.thumbImage = nil
     var targetSize = StoryboardConsts.GalleryCellTargetSize
     if let size = collectionView.layoutAttributesForItemAtIndexPath(indexPath)?.bounds.size {
@@ -90,5 +122,12 @@ extension GalleryCollectionViewController: UICollectionViewDelegate {
 // MARK: ImageSelectedDelegate Protocol
 protocol ImageSelectedDelegate: class {
   func controllerDidSelectImage(UIImage) -> Void
+}
+
+private func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
+  return CGSize(width: lhs.width*rhs, height: lhs.height*rhs)
+}
+private func *= (inout lhs: CGSize, rhs: CGFloat) {
+  lhs = lhs * rhs
 }
 

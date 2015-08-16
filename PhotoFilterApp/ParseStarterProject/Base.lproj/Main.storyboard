@@ -19,7 +19,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image from unsplash.com" translatesAutoresizingMaskIntoConstraints="NO" id="Nld-gk-vz9">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="Image from unsplash.com" translatesAutoresizingMaskIntoConstraints="NO" id="Nld-gk-vz9">
                                 <rect key="frame" x="-16" y="72" width="632" height="632"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Nld-gk-vz9" secondAttribute="height" multiplier="1:1" id="aC4-Cx-KfB"/>
@@ -136,6 +136,7 @@
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DZG-r4-gat">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
+                                            <gestureRecognizers/>
                                         </imageView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -158,7 +159,6 @@
                     </collectionView>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5du-ET-bsw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <pinchGestureRecognizer id="CmU-80-LT5"/>
             </objects>
             <point key="canvasLocation" x="2827" y="167"/>
         </scene>
