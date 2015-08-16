@@ -66,19 +66,19 @@ class ViewController: UIViewController {
   private func setNavigationItemButtons(editing: Bool) {
     let collectionViewBottomConstant: CGFloat
     if editing {
-      collectionViewBottomConstant = StoryboardConsts.CollectionViewBottomConstantShow
+      collectionViewBottomConstant = SizeConsts.CollectionViewBottomConstantShow
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Undo, target: self, action: "undoTapped")
       navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneTapped")
     }
     else {
-      collectionViewBottomConstant = StoryboardConsts.CollectionViewBottomConstantHidden
+      collectionViewBottomConstant = SizeConsts.CollectionViewBottomConstantHidden
       navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Add, target: self, action: "addTapped")
       if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone && originalNewImage != nil {
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Edit, target: self, action: "editTapped")
       }
     }
     if UIDevice.currentDevice().userInterfaceIdiom == UIUserInterfaceIdiom.Phone {
-      UIView.animateWithDuration(StoryboardConsts.CollectionViewAnimationDuration) { () -> Void in
+      UIView.animateWithDuration(SizeConsts.CollectionViewAnimationDuration) { () -> Void in
         self.collectionViewBottomConstraint.constant = collectionViewBottomConstant
         self.view.layoutIfNeeded()
       }
@@ -102,7 +102,7 @@ class ViewController: UIViewController {
   
   // MARK: Private Helper Methods
   private func actionSheetForAddTapped() {
-    let alert = UIAlertController(title: PhotoFilterConsts.ImportPhotoFrom, message: PhotoFilterConsts.PickImport, preferredStyle: .ActionSheet)
+    let alert = UIAlertController(title: StringConsts.ImportPhotoFrom, message: StringConsts.PickImport, preferredStyle: .ActionSheet)
     alert.modalPresentationStyle = .Popover
     alert.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
     //alert.popoverPresentationController?.sourceView = view
@@ -115,10 +115,10 @@ class ViewController: UIViewController {
         alert.addAction(sourceAction)
       }
     }
-    let galleryAction = UIAlertAction(title: PhotoFilterConsts.GalleryAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+    let galleryAction = UIAlertAction(title: StringConsts.GalleryAction, style: UIAlertActionStyle.Default) { (action) -> Void in
       self.performSegueWithIdentifier(StoryboardConsts.ShowGallerySequeIdentifier, sender: self.navigationItem.rightBarButtonItem)
     }
-    let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel) { (action) -> Void in
+    let cancelAction = UIAlertAction(title: StringConsts.CancelAction, style: UIAlertActionStyle.Cancel) { (action) -> Void in
       self.cancelAdd()
     }
     alert.addAction(galleryAction)
@@ -127,19 +127,19 @@ class ViewController: UIViewController {
   }
   
   private func actionSheetForDoneTapped() {
-    let alert = UIAlertController(title: PhotoFilterConsts.SaveOrShare, message: PhotoFilterConsts.PickSave, preferredStyle: .ActionSheet)
+    let alert = UIAlertController(title: StringConsts.SaveOrShare, message: StringConsts.PickSave, preferredStyle: .ActionSheet)
     alert.modalPresentationStyle = .Popover
     alert.popoverPresentationController?.barButtonItem = navigationItem.leftBarButtonItem
-    let uploadAction = UIAlertAction(title: PhotoFilterConsts.UploadAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+    let uploadAction = UIAlertAction(title: StringConsts.UploadAction, style: UIAlertActionStyle.Default) { (action) -> Void in
       self.uploadImage()
     }
-    let saveToPhoneAction = UIAlertAction(title: PhotoFilterConsts.SaveToPhoneAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+    let saveToPhoneAction = UIAlertAction(title: StringConsts.SaveToPhoneAction, style: UIAlertActionStyle.Default) { (action) -> Void in
       self.saveImageToPhone()
     }
-    let shareOnTwitterAction = UIAlertAction(title: PhotoFilterConsts.ShareOnTwitterAction, style: UIAlertActionStyle.Default) { (action) -> Void in
+    let shareOnTwitterAction = UIAlertAction(title: StringConsts.ShareOnTwitterAction, style: UIAlertActionStyle.Default) { (action) -> Void in
       self.shareImageOnTwitter()
     }
-    let cancelAction = UIAlertAction(title: PhotoFilterConsts.CancelAction, style: UIAlertActionStyle.Cancel) { (action) -> Void in
+    let cancelAction = UIAlertAction(title: StringConsts.CancelAction, style: UIAlertActionStyle.Cancel) { (action) -> Void in
       self.cancelSave()
     }
     alert.addAction(uploadAction)
@@ -161,11 +161,11 @@ class ViewController: UIViewController {
   
   private func uploadImage() {
     if let image = displayImage {
-      let reducedImage = ImageResizer.resize(image, size: StoryboardConsts.UploadImageSize, withRoundedCorner: nil)
+      let reducedImage = ImageResizer.resize(image, size: SizeConsts.UploadImageSize, withRoundedCorner: nil)
       if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
-        let pfFile = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
-        let pfObject = PFObject(className: PhotoFilterConsts.ParsePostClassname)
-        pfObject[PhotoFilterConsts.PostImage] = pfFile
+        let pfFile = PFFile(name: StringConsts.PostImageFilename, data: imageData)
+        let pfObject = PFObject(className: StringConsts.ParsePostClassname)
+        pfObject[StringConsts.PostImage] = pfFile
         pfObject.saveInBackgroundWithBlock { (result, error) -> Void in
           if let error = error {
             if error.code == PFErrorCode.ErrorConnectionFailed.rawValue {
@@ -188,7 +188,7 @@ class ViewController: UIViewController {
     
     if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
       if let image = displayImage {
-        let reducedImage = ImageResizer.resize(image, size: StoryboardConsts.TwitterImageSize, withRoundedCorner: nil)
+        let reducedImage = ImageResizer.resize(image, size: SizeConsts.TwitterImageSize, withRoundedCorner: nil)
         let socialComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
         socialComposeVC.completionHandler = { (result) -> Void in
           if result == .Cancelled {
@@ -197,7 +197,7 @@ class ViewController: UIViewController {
             }
           }
         }
-        if socialComposeVC.setInitialText(PhotoFilterConsts.TwitterImageText) && socialComposeVC.addImage(reducedImage) {
+        if socialComposeVC.setInitialText(StringConsts.TwitterImageText) && socialComposeVC.addImage(reducedImage) {
           presentViewController(socialComposeVC, animated: true, completion: nil)
         }
       }
@@ -307,9 +307,9 @@ extension UIImagePickerControllerSourceType {
   var actionTitle: String {
     get {
       switch self {
-      case .Camera: return PhotoFilterConsts.CameraAction
-      case .SavedPhotosAlbum: return PhotoFilterConsts.SavedPhotosAlbumAction
-      case .PhotoLibrary: return PhotoFilterConsts.PhotoLibraryAction
+      case .Camera: return StringConsts.CameraAction
+      case .SavedPhotosAlbum: return StringConsts.SavedPhotosAlbumAction
+      case .PhotoLibrary: return StringConsts.PhotoLibraryAction
       }
     }
   }

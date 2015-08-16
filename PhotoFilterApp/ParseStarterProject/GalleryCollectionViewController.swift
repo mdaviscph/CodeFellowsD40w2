@@ -13,7 +13,7 @@ class GalleryCollectionViewController: UICollectionViewController {
 
   // MARK: Public Properties
   weak var delegate: ImageSelectedDelegate?
-  var targetImageSize = StoryboardConsts.DisplayImageTargetSize
+  var targetImageSize = SizeConsts.DisplayImageTargetSize
   
   // MARK: Private Properties
   private var imagesMetaData: PHFetchResult?
@@ -56,8 +56,8 @@ class GalleryCollectionViewController: UICollectionViewController {
     if let layout = collectionView?.collectionViewLayout as? UICollectionViewFlowLayout {
       collectionView!.performBatchUpdates({ () -> Void in
         layout.itemSize *= scale
-        layout.itemSize.width = min(max(layout.itemSize.width, StoryboardConsts.GalleryCellMinimumSize), StoryboardConsts.GalleryCellMaximumSize)
-        layout.itemSize.height = min(max(layout.itemSize.height, StoryboardConsts.GalleryCellMinimumSize), StoryboardConsts.GalleryCellMaximumSize)
+        layout.itemSize.width = min(max(layout.itemSize.width, SizeConsts.GalleryCellMinimumSize), SizeConsts.GalleryCellMaximumSize)
+        layout.itemSize.height = min(max(layout.itemSize.height, SizeConsts.GalleryCellMinimumSize), SizeConsts.GalleryCellMaximumSize)
         layout.invalidateLayout()
         }, completion: { (finished) -> Void in
           collectionView?.reloadData()    // breakpoint shows this in main-thread
@@ -73,7 +73,7 @@ class GalleryCollectionViewController: UICollectionViewController {
   override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.ThumbnailCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
     cell.thumbImage = nil
-    var targetSize = StoryboardConsts.GalleryCellTargetSize
+    var targetSize = SizeConsts.GalleryCellTargetSize
     if let size = collectionView.layoutAttributesForItemAtIndexPath(indexPath)?.bounds.size {
       targetSize = size
     }

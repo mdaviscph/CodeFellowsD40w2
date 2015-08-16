@@ -25,6 +25,12 @@ class FilterSet {
     filter.setValue(ciImage, forKey: kCIInputImageKey)
     let ciImageWithFilter = filter.outputImage
     let cgImage = context.createCGImage(ciImageWithFilter, fromRect: ciImageWithFilter.extent())
-    return UIImage(CGImage: cgImage)
+    let orientation = image.imageOrientation
+    switch orientation {
+    case .Down:  return UIImage(CGImage: cgImage, scale: 1.0, orientation: UIImageOrientation.Down)
+    case .Left:  return UIImage(CGImage: cgImage, scale: 1.0, orientation: UIImageOrientation.Left)
+    case .Right: return UIImage(CGImage: cgImage, scale: 1.0, orientation: UIImageOrientation.Right)
+    default: return UIImage(CGImage: cgImage)
+    }
   }
 }

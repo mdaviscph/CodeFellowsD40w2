@@ -81,6 +81,45 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00A68CFA1B8137A90052D9F7 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				005C12551B7D62E800698D46 /* GalleryCollectionViewController.swift */,
+				81BA814C1A49DA1800E65899 /* ViewController.swift */,
+				005C12211B7D170F00698D46 /* ParseImagesViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		00A68CFB1B8137CB0052D9F7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				005C12231B7D173400698D46 /* ParseImageCell.swift */,
+				00B0903D1B7C018500BAADA6 /* ThumbnailCell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		00A68CFC1B8137ED0052D9F7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				00FB42581B7A7B8100380671 /* FilterType.swift */,
+				00B0903F1B7C2F7200BAADA6 /* FilterSet.swift */,
+				00B090391B7BCB6500BAADA6 /* ImageResizer.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		00A68CFD1B8137FB0052D9F7 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				00B0903B1B7C00A900BAADA6 /* StoryboardConsts.swift */,
+				006B99661B799B5D0024A48E /* PhotoFilterConsts.swift */,
+				00B090371B7BC90500BAADA6 /* Keys.swift */,
+			);
+			name = Constants;
+			sourceTree = "<group>";
+		};
 		81BA813C1A49DA1800E65899 = {
 			isa = PBXGroup;
 			children = (
@@ -102,17 +141,10 @@
 			isa = PBXGroup;
 			children = (
 				81BA814E1A49DA1800E65899 /* Main.storyboard */,
-				005C12551B7D62E800698D46 /* GalleryCollectionViewController.swift */,
-				81BA814C1A49DA1800E65899 /* ViewController.swift */,
-				005C12211B7D170F00698D46 /* ParseImagesViewController.swift */,
-				005C12231B7D173400698D46 /* ParseImageCell.swift */,
-				00B0903D1B7C018500BAADA6 /* ThumbnailCell.swift */,
-				00FB42581B7A7B8100380671 /* FilterType.swift */,
-				00B0903F1B7C2F7200BAADA6 /* FilterSet.swift */,
-				00B090391B7BCB6500BAADA6 /* ImageResizer.swift */,
-				00B0903B1B7C00A900BAADA6 /* StoryboardConsts.swift */,
-				006B99661B799B5D0024A48E /* PhotoFilterConsts.swift */,
-				00B090371B7BC90500BAADA6 /* Keys.swift */,
+				00A68CFA1B8137A90052D9F7 /* Controller */,
+				00A68CFB1B8137CB0052D9F7 /* View */,
+				00A68CFC1B8137ED0052D9F7 /* Model */,
+				00A68CFD1B8137FB0052D9F7 /* Constants */,
 				81BA81481A49DA1800E65899 /* Supporting Files */,
 			);
 			path = ParseStarterProject;

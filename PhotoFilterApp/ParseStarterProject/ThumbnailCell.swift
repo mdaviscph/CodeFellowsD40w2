@@ -19,6 +19,6 @@ class ThumbnailCell: UICollectionViewCell {
       }
     }
   }
-  // IBOutlets
+  // MARK: IBOutlets
   @IBOutlet weak var imageView: UIImageView!
 }

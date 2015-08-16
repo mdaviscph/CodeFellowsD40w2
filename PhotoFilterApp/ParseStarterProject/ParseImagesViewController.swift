@@ -20,14 +20,18 @@ class ParseImagesViewController: UITableViewController {
     
     // Uncomment the following line to preserve selection between presentations
     // clearsSelectionOnViewWillAppear = false
-
-    let query = PFQuery(className: PhotoFilterConsts.ParsePostClassname)
-    query.whereKeyExists(PhotoFilterConsts.PostImage)
+  }
+  
+  override func viewWillAppear(animated: Bool) {
+    super.viewWillAppear(animated)
+    
+    let query = PFQuery(className: StringConsts.ParsePostClassname)
+    query.whereKeyExists(StringConsts.PostImage)
     let date = NSDate()
     query.findObjectsInBackgroundWithBlock { (pfObjects, error) -> Void in
       if let pfObjects = pfObjects as? [PFObject] {
         for pfObject in pfObjects {
-          if let pfFile = pfObject[PhotoFilterConsts.PostImage] as? PFFile {
+          if let pfFile = pfObject[StringConsts.PostImage] as? PFFile {
             pfFile.getDataInBackgroundWithBlock { (data, error) -> Void in
               if let data = data, image = UIImage(data: data) {
                 self.cloudImages.append(image)
@@ -55,22 +59,3 @@ extension ParseImagesViewController: UITableViewDataSource {
     return cell
   }
 }
-  /*
-  // Override to support conditional editing of the table view.
-  override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-  // Return NO if you do not want the specified item to be editable.
-  return true
-  }
-  */
-  
-  /*
-  // Override to support editing the table view.
-  override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-  if editingStyle == .Delete {
-  // Delete the row from the data source
-  tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-  } else if editingStyle == .Insert {
-  // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-  }
-  }
-  */
