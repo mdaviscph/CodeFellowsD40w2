@@ -6,6 +6,7 @@
 
 import UIKit
 import Parse
+import Social
 
 class ViewController: UIViewController {
 
@@ -148,18 +149,61 @@ class ViewController: UIViewController {
     presentViewController(alert, animated: true, completion: nil)
   }
   
-  private func startImagePicker(sourceType: UIImagePickerControllerSourceType) -> Bool {
+  private func startImagePicker(sourceType: UIImagePickerControllerSourceType) {
     let imagePC = UIImagePickerController()
     imagePC.delegate = self
     imagePC.allowsEditing = true
     if UIImagePickerController.isSourceTypeAvailable(sourceType) {
       imagePC.sourceType = sourceType
       presentViewController(imagePC, animated: true, completion: nil)
-      return true
     }
-    return false
   }
   
+  private func uploadImage() {
+    if let image = displayImage {
+      let reducedImage = ImageResizer.resize(image, size: StoryboardConsts.UploadImageSize, withRoundedCorner: nil)
+      if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
+        let pfFile = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
+        let pfObject = PFObject(className: PhotoFilterConsts.ParsePostClassname)
+        pfObject[PhotoFilterConsts.PostImage] = pfFile
+        pfObject.saveInBackgroundWithBlock { (result, error) -> Void in
+          if let error = error {
+            if error.code == PFErrorCode.ErrorConnectionFailed.rawValue {
+              // handle error while in a background queue
+            }
+          }
+          if result {
+            // nothing to do except perhaps to report success
+          }
+        }
+      }
+    }
+  }
+  
+  private func saveImageToPhone() {
+    
+  }
+  
+  private func shareImageOnTwitter() {
+    
+    if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+      if let image = displayImage {
+        let reducedImage = ImageResizer.resize(image, size: StoryboardConsts.TwitterImageSize, withRoundedCorner: nil)
+        let socialComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
+        socialComposeVC.completionHandler = { (result) -> Void in
+          if result == .Cancelled {
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+              self.cancelSave()
+            }
+          }
+        }
+        if socialComposeVC.setInitialText(PhotoFilterConsts.TwitterImageText) && socialComposeVC.addImage(reducedImage) {
+          presentViewController(socialComposeVC, animated: true, completion: nil)
+        }
+      }
+    }
+  }
+
   private func filteredImage(image: UIImage, filterType: FilterType) -> UIImage? {
     let parameters = parametersFor(filterType)
     let name = filterType.name
@@ -172,7 +216,7 @@ class ViewController: UIViewController {
       return filter(name, parameters, context, image)
     }
   }
-
+  
   // this would eventually be in a detail view controller that would allow the
   // various parameters to be set based on the type of filter
   private func parametersFor(filterType: FilterType) -> [String:AnyObject] {
@@ -197,45 +241,17 @@ class ViewController: UIViewController {
     }
     return parameters
   }
-
-  private func uploadImage() {
-    if let image = displayImage {
-      let reducedImage = ImageResizer.resize(image, size: StoryboardConsts.UploadImageSize, withRoundedCorner: nil)
-      if let imageData = UIImageJPEGRepresentation(reducedImage, 1.0) {
-        let pfFile = PFFile(name: PhotoFilterConsts.PostImageFilename, data: imageData)
-        let pfObject = PFObject(className: PhotoFilterConsts.ParsePostClassname)
-        pfObject[PhotoFilterConsts.PostImage] = pfFile
-        pfObject.saveInBackgroundWithBlock { (result, error) -> Void in
-          if let error = error {
-            if error.code == PFErrorCode.ErrorConnectionFailed.rawValue {
-              // handle error while in a background queue
-            }
-          }
-          if result {
-            // nothing to do except perhaps to report success
-          }
-        }
-      }
-    }
-  }
-  
-  private func saveImageToPhone() {
-  
-  }
-  private func shareImageOnTwitter() {
-  
-  }
 }
 
 // MARK: UIImagePickerControllerDelegate
 // MARK: UINavigationControllerDelegate
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-    picker.dismissViewControllerAnimated(false, completion: nil)
+    picker.dismissViewControllerAnimated(true, completion: nil)
     cancelAdd()
   }
   func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-    picker.dismissViewControllerAnimated(false, completion: nil)
+    picker.dismissViewControllerAnimated(true, completion: nil)
     if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
       displayImage = image
       originalNewImage = image

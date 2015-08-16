@@ -19,8 +19,9 @@ struct PhotoFilterConsts {
   static let PickSave = "your photo to..."
   static let UploadAction = "Upload to the Cloud"
   static let SaveToPhoneAction = "Save to Phone (not yet..)"
-  static let ShareOnTwitterAction = "Share on Twitter (not yet..)"
+  static let ShareOnTwitterAction = "Share on Twitter"
   static let ParsePostClassname = "PhotoFilterApp"
   static let PostImage = "Image"
   static let PostImageFilename = "test.jpg"
+  static let TwitterImageText = "testing tweeting with image from an iOS app that I am working on"
   }

@@ -19,6 +19,7 @@ struct StoryboardConsts {
   static let GalleryCellTargetSize = CGSize(width: 100, height: 100)
   static let DisplayImageTargetSize = CGSize(width: 600, height: 600)
   static let UploadImageSize = CGSize(width: 600, height: 600)
+  static let TwitterImageSize = CGSize(width: 600, height: 600)
   static let GalleryCellMinimumSize: CGFloat = 45
   static let GalleryCellMaximumSize: CGFloat = 300
 }
