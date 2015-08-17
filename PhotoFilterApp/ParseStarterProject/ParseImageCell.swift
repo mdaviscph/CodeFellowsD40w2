@@ -14,7 +14,7 @@ class ParseImageCell: UITableViewCell {
   var parseImage: UIImage? {
     didSet {
       if let parseImage = parseImage, reducedImageView = reducedImageView  {
-        let reducedImage = ImageResizer.resize(parseImage, size: reducedImageView.bounds.size, withRoundedCorner: nil)
+        let reducedImage = ImageResizer.resize(parseImage, size: reducedImageView.frame.size, withRoundedCorner: nil)
         reducedImageView.image = reducedImage
       }
     }

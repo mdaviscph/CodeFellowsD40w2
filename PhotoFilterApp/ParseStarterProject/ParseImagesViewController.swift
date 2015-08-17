@@ -12,7 +12,7 @@ import Parse
 class ParseImagesViewController: UITableViewController {
   
   // MARK: Private Properties
-  private var cloudImages = [UIImage]()
+  private var pfFiles = [PFFile]()
   
   // MARK: Life Cycle Methods
   override func viewDidLoad() {
@@ -25,6 +25,7 @@ class ParseImagesViewController: UITableViewController {
   override func viewWillAppear(animated: Bool) {
     super.viewWillAppear(animated)
     
+    pfFiles = []
     let query = PFQuery(className: StringConsts.ParsePostClassname)
     query.whereKeyExists(StringConsts.PostImage)
     let date = NSDate()
@@ -32,15 +33,13 @@ class ParseImagesViewController: UITableViewController {
       if let pfObjects = pfObjects as? [PFObject] {
         for pfObject in pfObjects {
           if let pfFile = pfObject[StringConsts.PostImage] as? PFFile {
-            pfFile.getDataInBackgroundWithBlock { (data, error) -> Void in
-              if let data = data, image = UIImage(data: data) {
-                self.cloudImages.append(image)
-                NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                  println(String(format: "findObjectsInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
-                  self.tableView.reloadData()
-                }
-              }
-            }
+            self.pfFiles.append(pfFile)
+          }
+        }
+        if !self.pfFiles.isEmpty {
+          NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            println(String(format: "findObjectsInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
+            self.tableView.reloadData()
           }
         }
       }
@@ -51,11 +50,24 @@ class ParseImagesViewController: UITableViewController {
 // MARK: - Table view data source
 extension ParseImagesViewController: UITableViewDataSource {
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return cloudImages.count
+    return pfFiles.count
   }
   override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCellWithIdentifier(StoryboardConsts.ParseImageCellReuseIdentifier, forIndexPath: indexPath) as! ParseImageCell
-    cell.parseImage = cloudImages[indexPath.row]
+    let tag = ++cell.tag
+    cell.parseImage = nil
+    let pfFile = pfFiles[indexPath.row]
+    let date = NSDate()
+    pfFile.getDataInBackgroundWithBlock { (data, error) -> Void in
+      if let data = data, image = UIImage(data: data) {
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+          if cell.tag == tag {
+            cell.parseImage = image
+          }
+          println(String(format: "getDataInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
+        }
+      }
+    }
     return cell
   }
 }

@@ -72,16 +72,21 @@ class GalleryCollectionViewController: UICollectionViewController {
 
   override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCellWithReuseIdentifier(StoryboardConsts.ThumbnailCellReuseIdentifier, forIndexPath: indexPath) as! ThumbnailCell
+    let tag = ++cell.tag
     cell.thumbImage = nil
     var targetSize = SizeConsts.GalleryCellTargetSize
     if let size = collectionView.layoutAttributesForItemAtIndexPath(indexPath)?.bounds.size {
       targetSize = size
     }
     
+    let date = NSDate()
     if let asset = imagesMetaData?[indexPath.row] as? PHAsset {
       let requestId = PHCachingImageManager().requestImageForAsset(asset, targetSize: targetSize, contentMode: PHImageContentMode.AspectFill, options: nil) { (image, info) -> Void in
         if let image = image {
-          cell.thumbImage = image
+          if cell.tag == tag {
+            cell.thumbImage = image
+          }
+          println(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))
         }
         else {
           // do something with dictionary possibly using PHImageCancelledKey or PHImageErrorKey
