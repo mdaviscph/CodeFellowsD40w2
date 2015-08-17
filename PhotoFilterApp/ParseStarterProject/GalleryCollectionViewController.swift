@@ -100,9 +100,10 @@ extension GalleryCollectionViewController: UICollectionViewDelegate {
     if let asset = imagesMetaData?[indexPath.row] as? PHAsset {
       let options = PHImageRequestOptions()
       options.synchronous = true
+      let size = targetImageSize
       NSOperationQueue().addOperationWithBlock { () -> Void in
         let date = NSDate()
-        let requestId = PHCachingImageManager().requestImageForAsset(asset, targetSize: self.targetImageSize, contentMode: PHImageContentMode.AspectFill, options: options) { (image, info) -> Void in
+        let requestId = PHCachingImageManager().requestImageForAsset(asset, targetSize: size, contentMode: PHImageContentMode.AspectFill, options: options) { (image, info) -> Void in
           if let image = image {
             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
               println(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))

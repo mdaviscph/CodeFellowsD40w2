@@ -228,9 +228,9 @@ class ViewController: UIViewController {
     case .CIColorCrossPolynomial:
       let redFloatArray: [CGFloat] = [0,0,0,0,3,0,0,0,0,0]
       let redVector = CIVector(values: redFloatArray, count: redFloatArray.count)
-      let greenFloatArray: [CGFloat] = [0,0,0,0,0,0,0,4,0,0]
+      let greenFloatArray: [CGFloat] = [0,0,0,0,0,0,0,3,0,0]
       let greenVector = CIVector(values: greenFloatArray, count: greenFloatArray.count)
-      let blueFloatArray: [CGFloat] = [0,0,5,0,0,0,0,0,0,0]
+      let blueFloatArray: [CGFloat] = [0,0,3,0,0,0,0,0,0,0]
       let blueVector = CIVector(values: blueFloatArray, count: blueFloatArray.count)
       parameters["inputRedCoefficients"] = redVector
       parameters["inputGreenCoefficients"] = greenVector
@@ -289,8 +289,13 @@ extension ViewController: UICollectionViewDelegate {
     if let displayImage = displayImage, filterSet = filterSet {
       let filterType = filterSet.possibleFilters[indexPath.row]
       let date = NSDate()
-      self.displayImage = filteredImage(displayImage, filterType: filterType)
-      println(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
+      NSOperationQueue().addOperationWithBlock { () -> Void in
+        let image = self.filteredImage(displayImage, filterType: filterType)
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+          self.displayImage = image
+          println(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
+        }
+      }
     }
   }
 }
