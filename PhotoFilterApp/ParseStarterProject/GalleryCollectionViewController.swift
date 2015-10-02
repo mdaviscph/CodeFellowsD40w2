@@ -48,7 +48,7 @@ class GalleryCollectionViewController: UICollectionViewController {
     
     let date = NSDate()
     imagesMetaData = PHAsset.fetchAssetsWithMediaType(PHAssetMediaType.Image, options: nil)
-    println(String(format: "fetchAssetsWithMediaType in %0.4f seconds", -date.timeIntervalSinceNow))
+    print(String(format: "fetchAssetsWithMediaType in %0.4f seconds", -date.timeIntervalSinceNow))
   }
   
   // MARK: Private Helper Methods
@@ -86,7 +86,7 @@ class GalleryCollectionViewController: UICollectionViewController {
           if cell.tag == tag {
             cell.thumbImage = image
           }
-          println(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))
+          print(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))
         }
         else {
           // do something with dictionary possibly using PHImageCancelledKey or PHImageErrorKey
@@ -100,7 +100,7 @@ class GalleryCollectionViewController: UICollectionViewController {
 
 
 // MARK: UICollectionViewDelegate
-extension GalleryCollectionViewController: UICollectionViewDelegate {
+extension GalleryCollectionViewController {
   override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
     if let asset = imagesMetaData?[indexPath.row] as? PHAsset {
       let options = PHImageRequestOptions()
@@ -111,7 +111,7 @@ extension GalleryCollectionViewController: UICollectionViewDelegate {
         let requestId = PHCachingImageManager().requestImageForAsset(asset, targetSize: size, contentMode: PHImageContentMode.AspectFill, options: options) { (image, info) -> Void in
           if let image = image {
             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-              println(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))
+              print(String(format: "requestImageForAsset in %0.4f seconds", -date.timeIntervalSinceNow))
               self.navigationController?.popViewControllerAnimated(true)
               self.delegate?.controllerDidSelectImage(image)
             }
@@ -127,7 +127,7 @@ extension GalleryCollectionViewController: UICollectionViewDelegate {
 
 // MARK: ImageSelectedDelegate Protocol
 protocol ImageSelectedDelegate: class {
-  func controllerDidSelectImage(UIImage) -> Void
+  func controllerDidSelectImage(_: UIImage) -> Void
 }
 
 private func * (lhs: CGSize, rhs: CGFloat) -> CGSize {

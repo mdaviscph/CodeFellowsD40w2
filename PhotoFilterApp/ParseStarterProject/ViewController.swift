@@ -13,7 +13,6 @@ class ViewController: UIViewController {
   // MARK: Public Properties
   var displayImage: UIImage? {
     didSet {
-      let date = NSDate()
       if let displayImage = displayImage {
         let reducedImage = ImageResizer.resize(displayImage, size: imageView.frame.size, withRoundedCorner: nil)
         imageView.image = reducedImage
@@ -250,7 +249,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     picker.dismissViewControllerAnimated(true, completion: nil)
     cancelAdd()
   }
-  func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+  func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
     picker.dismissViewControllerAnimated(true, completion: nil)
     if let image = info[UIImagePickerControllerEditedImage] as? UIImage {
       displayImage = image
@@ -276,7 +275,7 @@ extension ViewController: UICollectionViewDataSource {
           if cell.tag == tag {
             cell.thumbImage = image
           }
-          println(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
+          print(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
         }
       }
     }
@@ -293,7 +292,7 @@ extension ViewController: UICollectionViewDelegate {
         let image = self.filteredImage(displayImage, filterType: filterType)
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
           self.displayImage = image
-          println(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
+          print(String(format: "filtered image in %0.4f seconds", -date.timeIntervalSinceNow))
         }
       }
     }

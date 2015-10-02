@@ -26,7 +26,7 @@ enum FilterType {
   }
 }
 // MARK: Printable
-extension FilterType: Printable {
+extension FilterType: CustomStringConvertible {
   var description: String {
     get {
       switch self {

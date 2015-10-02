@@ -38,7 +38,7 @@ class ParseImagesViewController: UITableViewController {
         }
         if !self.pfFiles.isEmpty {
           NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            println(String(format: "findObjectsInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
+            print(String(format: "findObjectsInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
             self.tableView.reloadData()
           }
         }
@@ -48,7 +48,7 @@ class ParseImagesViewController: UITableViewController {
 }
 
 // MARK: - Table view data source
-extension ParseImagesViewController: UITableViewDataSource {
+extension ParseImagesViewController {
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return pfFiles.count
   }
@@ -64,7 +64,7 @@ extension ParseImagesViewController: UITableViewDataSource {
           if cell.tag == tag {
             cell.parseImage = image
           }
-          println(String(format: "getDataInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
+          print(String(format: "getDataInBackgroundWithBlock in %0.4f seconds", -date.timeIntervalSinceNow))
         }
       }
     }
